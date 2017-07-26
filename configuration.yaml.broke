@@ -1,0 +1,385 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 38.623597
+  longitude: -85.724111
+  # Impacts weather/sunrise data
+  elevation: 175
+  # C for Celsius, F for Fahrenheit
+  #temperature_unit: F
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Indiana/Indianapolis
+
+  customize:
+    sensor.speedtest_ping:
+      friendly_name: 'Ping Time'
+      icon: mdi:speedometer
+    sensor.speedtest_download:
+      friendly_name: 'Download'
+      icon: mdi:download
+    sensor.speedtest_upload:
+      friendly_name: 'Upload'
+      icon: mdi:upload
+    media_player.roku_63259d009925:
+      friendly_name: 'Living Room Roku'
+    media_player.roku_13c27n041227:
+      friendly_name: 'Bedroom Roku'
+    sensor.moviebox_transmission_down_speed:
+      friendly_name: 'Transmission Download'
+      icon: mdi:download
+    sensor.moviebox_transmission_up_speed:
+      friendly_name: 'Transmission Upload'
+      icon: mdi:upload
+  
+recorder:
+  purge_days: 3
+
+group:
+  default_view:
+    view: yes
+    entities:
+      - sun.sun
+      - group.stove
+      - switch.puff_light
+      - switch.rainbow_light
+  stats_tab:
+    name: Stats
+    view: yes
+    entities:
+      - group.internet
+      - group.moviebox
+      - group.family
+      - group.homeasst
+      - group.test
+  media_tab:
+    name: Media
+    view: yes
+    entities:
+      - media_player.roku_63259d009925
+      - media_player.roku_13c27n041227
+      - media_player.roku_3
+  util_tab:
+    name: Utililitys
+    view: yes
+    entities:
+      - weblink.nodered
+      - weblink.sabnzbd
+  internet:
+    name: Internet Capacity
+    entities:
+      - sensor.speedtest_ping
+      - sensor.speedtest_download
+      - sensor.speedtest_upload
+      - sensor.fastcom_speedtest
+  moviebox:
+    name: Moviebox
+    entities:
+      - sensor.moviebox_transmission_down_speed
+      - sensor.moviebox_transmission_up_speed
+  family:
+    name: Family
+    entities:
+      - device_tracker.mike_phone
+      - sensor.mike_phone_battery
+      - device_tracker.tammy_phone
+  homeasst:
+    name: Home Assistant Status
+    entities:
+      - sensor.cpu_use
+      - sensor.ram_free
+      - sensor.disk_use_home
+      - sensor.last_boot
+      - sensor.since_last_boot
+  test:
+    name: Testing
+    entities:
+      - switch.test
+      - sensor.mfi_mport
+  stove:
+    name: Stove
+    entities:
+      - sensor.stove_humidity
+      - sensor.stove_temperature
+
+weblink:
+  entities:
+    - name: Node-Red
+      url: http://192.168.9.42:1880
+    - name: Sabnzbd
+      url: http://192.168.9.10:8080
+
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+http:
+  # Uncomment this to add a password (recommended!)
+  #api_password: 83ade57
+
+# Checks for available updates
+updater:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+sensor:
+- platform: forecast
+  api_key: aa17365fbe0cf5e8b07d5c7d90a95e89
+  monitored_conditions:
+    - temperature
+    - humidity
+- platform: plex
+#  name: moviebox
+#  host: 192.168.9.10
+#  port: 3400
+#  username: onezero1010101
+#  password: Fargo83ade57
+#  server: omv-moviebox
+- platform: speedtest
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+- platform: transmission
+#  host: 192.168.9.10
+#  port: 9091
+#  name: Moviebox Transmission
+#  monitored_variables:
+#    - 'download_speed'
+#    - 'upload_speed'
+- platform: systemmonitor
+  resources:
+    - type: disk_use_percent
+      arg: /home
+    - type: memory_free
+    - type: processor_use
+    - type: last_boot
+    - type: since_last_boot
+- platform: fastdotcom
+  minute: 
+    - 15
+    - 45
+- platform: mqtt
+  state_topic: "owntracks/mike/phone"
+  name: "Mike Phone Battery"
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.batt }}'
+- platform: arest
+#  resource: http://192.168.8.43:3000
+#  name: stove
+#  monitored_variables:
+#    - name: temperature
+#      unit_of_measurement: 'C'
+#      value_template: '{{ value | round(1) }}'
+#    - name: humidity
+#      unit_of_measurement: '%'
+#  pins:
+#    D12:
+#      name: Pin 12 Digital
+#      value_template: '{{ value_json.light }}'
+- platform: command_line
+  name: mfi mPort  
+#  command: bash /home/hass/.homeassistant/convert.sh /home/pi/noctemp
+  unit_of_measurement: 'F'
+#  value_template: '{{ value | round(2) }}'
+  command: "cat /home/pi/noctemp"
+  value_template: '{{ ((value|float * 30 - 10)*1.8+32)|round(2) }}'
+  
+
+mqtt:
+  broker: 127.0.0.1
+  port: 1883
+#  broker: m12.cloudmqtt.com
+#  port: 11750
+#  username: hass
+#  password: 83ade57
+
+#  broker: 127.0.0.1
+#  port: 1883
+#  client_id: home-assistant-1
+#  username: pi
+#  password: raspberry
+
+media_player:
+- platform: roku
+#  host: 192.168.9.157
+- platform: plex
+
+notify: 
+- platform: instapush
+  name: instapush
+  api_key: 57b1dbbda4c48ac0a87b23c6
+  app_secret: c2a83dc950281060c4f124b9b3e104ef
+  event: msg
+  tracker: hass
+- platform: nma
+  name: nma
+  api_key: adc729898e59d9ef12f27d7206848c32e9f288277c9d7ae3
+#- platform: pushetta
+#  name: pushetta
+#  api_key: 10369ec6dfd2ab2f889471e0954d859ae248db08
+#  channel_name: ozhomeassistant
+
+
+automation: 
+- alias: Update notifications
+  trigger: 
+    - platform: state
+      entity_id: updater.updater
+  action: 
+    service: notify.instapush
+    data:
+      message: 'There is a new Home Assistant release available'
+- alias: Send reminder
+  trigger:
+    platform: time
+    hours: 17
+    minutes: 3
+    seconds: 0
+  action:
+    service: notify.instapush
+    data:
+      message: 'Reminder activated'
+- alias: Reptile Lights
+  trigger:
+    platform: time
+    hours: 7
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+- alias: Reptile Off
+  trigger:
+    platform: time
+    hours: 21
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+
+- alias: Mike at Work
+  trigger: 
+    platform: zone
+    entity_id: device_tracker.mike_phone
+    zone: zone.Work
+    event: enter
+  action:
+    service: notify.instapush 
+    data: 
+      message: "Mike has arrived at work"
+- alias: Mike left Work
+  trigger: 
+    platform: zone
+    entity_id: device_tracker.mike_phone
+    zone: zone.Work
+    event: leave
+  action:
+    service: notify.instapush 
+    data: 
+      message: "Mike has left work"
+- alias: Tammy Home
+  trigger:
+    platform: state
+    entity_id: device_tracker.tammy_phone
+    to: 'home'
+  action: 
+    service: notify.instapush
+    data: 
+      message: "Tammy is home"
+- alias: Tammy Not Home
+  trigger:
+    platform: state
+    entity_id: device_tracker.tammy_phone
+    to: 'not_home'
+  action: 
+    service: notify.instapush
+    data: 
+      message: "Tammy is away from home"
+
+#- alias: Test Alert
+#  trigger:
+#    platform: numeric_state
+#    entity_id: sensor.moviebox_transmission_down_speed
+#    above: .01
+#  action: 
+#    service: notify.pushetta
+#    data:
+#      title: "Trans down speed"
+#      message: "Trans speed is {{ states.sensor.moviebox_transmission_down_speed.state }} "
+
+
+device_tracker:
+- platform: unifi
+  host: 192.168.8.71
+  port: 8443
+  username: admin
+  password: 83ade57
+  site_id: montgomery
+  track_new_devices: no
+  interval_seconds: 12
+  consider_home: 180
+- platform: owntracks
+  max_gps_accuracy: 200
+
+zone:
+- name: Home
+  latitude: 38.623597
+  longitude: -85.724111
+  radius: 100
+  icon: mdi:home
+- name: Work
+  latitude: 38.661247
+  longitude: -85.775071
+  radius: 100
+- name: Walmart
+  latitude: 38.687667
+  longitude: -85.795636
+  icon: mdi:store
+#- name: Tammys Parents
+#  latitude: 38.695968
+#  longitude: -85.780080
+#  icon: mdi:home
+
+switch: 
+- platform: mqtt
+  name: "Test"
+  state_topic: "topic/test"
+  command_topic: "topic/test/set"
+  payload_on: "ON"
+  payload_off: "OFF"
+  optimistic: true
+  qos: 0
+  retain: true
+  value_template: '{{ value.x }}'
+- platform: orvibo
+  discovery: false
+  switches:
+    - host: 192.168.9.31
+      mac: ac:cf:23:93:2a:44
+      name: "Puff Light"
+    - host: 192.168.9.32
+      mac: ac:cf:23:93:33:70
+      name: "Rainbow Light"

@@ -1,0 +1,86 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 38.6911
+  longitude: -85.8545
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 175
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Indiana/Indianapolis
+
+# Show links to resources in log and frontend
+introduction:
+
+# Enables the frontend
+frontend:
+
+http:
+  # Uncomment this to add a password (recommended!)
+  # api_password: PASSWORD
+  # Uncomment this if you are using SSL or running in Docker etc
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+updater:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+# Weather Prediction
+sensor:
+  platform: yr
+
+# Text to speech
+tts:
+  platform: google
+
+switch:
+- platform: orvibo
+  discovery: false
+  switches:
+    - host: 192.168.9.31
+      mac: ac:cf:23:93:2a:44
+      name: "Puff Light"
+    - host: 192.168.9.32
+      mac: ac:cf:23:93:33:70
+      name: "Rainbow Light"
+
+automation:
+- alias: Reptile Lights
+  trigger:
+    platform: time
+    hours: 7
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+- alias: Reptile Off
+  trigger:
+    platform: time
+    hours: 21
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+
