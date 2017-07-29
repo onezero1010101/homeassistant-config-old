@@ -22,6 +22,8 @@ homeassistant:
       friendly_name: 'Upload'
       icon: mdi:upload
 
+automation: !include automations.yaml
+
 recorder:
   purge_days: 3
 
@@ -112,7 +114,7 @@ switch:
       mac: ac:cf:23:93:33:70
       name: "Rainbow Light"
 
-automation:
+automation old:
 - alias: Reptile Lights
   trigger:
     platform: time
@@ -135,5 +137,31 @@ automation:
     entity_id:
       - switch.puff_light
       - switch.rainbow_light
+- alias: Check Puff Light
+  trigger:
+    platform: state
+    entity_id: switch.puff_light
+    to: 'off'
+  condition:
+    condition: time
+    after: '07:30:00'
+    before: '21:30:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.puff_light
+
+- alias: Check Rainbow Light
+  trigger:
+    platform: state
+    entity_id: switch.rainbow_light
+    to: 'off'
+  condition:
+    condition: time
+    after: '07:30:00'
+    before: '21:30:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.rainbow_light
+
 
 
