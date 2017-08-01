@@ -1,3 +1,4 @@
+
 homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
@@ -22,6 +23,11 @@ homeassistant:
       friendly_name: 'Upload'
       icon: mdi:upload
 
+zwave:
+  usb_path: /dev/ttyACM1
+  config_path: /srv/hass/src/python-openzwave/openzwave/config/
+  autoheal: true
+
 automation: !include automations.yaml
 
 recorder:
@@ -34,6 +40,11 @@ group:
       - sun.sun
       - switch.puff_light
       - switch.rainbow_light
+  security_tab:
+    name: Security
+    view: yes
+    entities:
+      - camera.pool
   stats_tab:
     name: Stats
     view: yes
@@ -98,6 +109,11 @@ sensor:
     - 15
     - 45
 
+camera:
+- platform: uvc
+  nvr: 192.168.9.15
+  key: mHcpF7ffC9SaUh6UZikk5zwjph3INALi  
+  password: !secret uvc_password
 
 # Text to speech
 tts:
