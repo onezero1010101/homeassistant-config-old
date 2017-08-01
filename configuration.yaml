@@ -28,6 +28,8 @@ zwave:
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
   autoheal: true
 
+emulated_hue:
+
 automation: !include automations.yaml
 
 recorder:
