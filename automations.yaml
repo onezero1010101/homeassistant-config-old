@@ -1,0 +1,51 @@
+- id: reptile_lights_on
+  alias: Reptile Lights On
+  trigger:
+    platform: time
+    hours: 7
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+- id: reptile_lights_off
+  alias: Reptile Lights Off
+  trigger:
+    platform: time
+    hours: 21
+    minutes: 30
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.puff_light
+      - switch.rainbow_light
+- id: check_puff_light  
+  alias: Check Puff Light
+  trigger:
+    platform: state
+    entity_id: switch.puff_light
+    to: 'off'
+  condition:
+    condition: time
+    after: '07:30:00'
+    before: '21:30:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.puff_light
+- id: check_rainbow_light
+  alias: Check Rainbow Light
+  trigger:
+    platform: state
+    entity_id: switch.rainbow_light
+    to: 'off'
+  condition:
+    condition: time
+    after: '07:30:00'
+    before: '21:30:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.rainbow_light
+
