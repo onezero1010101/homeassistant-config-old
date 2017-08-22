@@ -48,4 +48,125 @@
   action:
     service: homeassistant.turn_on
     entity_id: switch.rainbow_light
+- id: update_notification
+  alias: Update notifications
+  trigger:
+    - platform: state
+      entity_id: updater.updater
+  action:
+    service: notify.hassbot
+    data:
+      message: 'There is a new Home Assistant release available'
+- id: pool_pump_1_on
+  alias: Pool Pump Cycle 1 On
+  trigger:
+    platform: time
+    hours: 8
+    minutes: 0
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_1_off
+  alias: Pool Pump Cycle 1 Off
+  trigger:
+    platform: time
+    hours: 12
+    minutes: 0
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_2_on
+  alias: Pool Pump Cycle 2 On
+  trigger:
+    platform: time
+    hours: 16
+    minutes: 0
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_2_off
+  alias: Pool Pump Cycle 2 Off
+  trigger:
+    platform: time
+    hours: 20
+    minutes: 0
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_3_on
+  alias: Pool Pump Cycle 3 On
+  trigger:
+    platform: time
+    hours: 0
+    minutes: 0
+    seconds: 0
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_3_off
+  alias: Pool Pump Cycle 3 Off
+  trigger:
+    platform: time
+    hours: 2
+    minutes:  0
+    seconds: 0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.ge_14292_inwall_smart_switch_switch
+- id: pool_pump_notify
+  alias: Pool Pump Notify
+  trigger:
+    platform: state
+    entity_id: switch.ge_14292_inwall_smart_switch_switch
+  action:
+    service: notify.hassbot
+    data_template:
+      message: "Pool Pump has turned from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"  
+- id: test_switch
+  alias: Test Switch Notify
+  trigger:
+    platform: state
+    entity_id: switch.test
+  action:
+    service: notify.hassbot
+    data_template:
+      message: "Test Switch from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"  
+- id: notify_mike_home
+  trigger:
+    platform: zone
+    entity_id: device_tracker.mike
+    zone: zone.home
+    event: leave
+  action:
+    service: notify.hassbot
+    data:
+      message: "Mike has {{ trigger.to_state.state }} home"
+- id: renew_ssl_cert
+  alias: 'Auto Renew SSL Cert'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 29
+  action:
+    service: shell_command.renew_ssl
 
+- id: ping_pong
+  trigger: 
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/ping'
+  action:
+    service: notify.hassbot
+    data:
+      message: 'pong'

@@ -1,10 +1,9 @@
-
 homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
   # Location required to calculate the time the sun rises and sets
-  latitude: 38.623597
-  longitude: -85.724111
+  latitude: !secret lat
+  longitude: !secret long
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 175
   # metric for Metric, imperial for Imperial
@@ -22,13 +21,29 @@ homeassistant:
     sensor.speedtest_upload:
       friendly_name: 'Upload'
       icon: mdi:upload
+    switch.puff_light:
+      emulated_hue: true
+      emulated_hue_name: "puff light"
+      icon: mdi:lightbulb
+    switch.rainbow_light:
+      emulated_hue: true
+      emulated_hue_name: "rainbow light"
+      icon: mdi:lightbulb
+    switch.ge_14292_inwall_smart_switch_switch:
+      friendly_name: 'Pool Pump'
 
 zwave:
-  usb_path: /dev/ttyACM1
+  usb_path: /dev/ttyACM0
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
   autoheal: true
 
+mqtt:
+  broker: 127.0.0.1
+  port: 1883
+
 emulated_hue:
+  host_ip: 192.168.9.42
+  type: alexa
 
 automation: !include automations.yaml
 
@@ -39,9 +54,14 @@ group:
   default_view:
     view: yes
     entities:
+      - group.reptile
       - sun.sun
-      - switch.puff_light
-      - switch.rainbow_light
+#      - switch.puff_light
+#      - switch.rainbow_light
+      - switch.ge_14292_inwall_smart_switch_switch
+      - device_tracker.mike
+      - device_tracker.tammy
+      - sensor.mike_phone_battery_zanz
   security_tab:
     name: Security
     view: yes
@@ -59,6 +79,21 @@ group:
       - media_player.roku_63259d009925
       - media_player.roku_13c27n041227
       - media_player.roku_3
+  zanzito_tab:
+    name: Z
+    view: yes
+    entities:
+      - group.zanzito_stats
+  zanzito_stats:
+    entities:
+      - binary_sensor.zanzito_status
+      - binary_sensor.mike_charging_status
+      - device_tracker.mike
+      - sensor.mike_app
+      - sensor.mike_screen_on
+      - sensor.mike_wifi
+      - sensor.mike_phone_battery_zanz
+      - switch.test
   internet:
     name: Internet Capacity
     entities:
@@ -66,7 +101,11 @@ group:
       - sensor.speedtest_download
       - sensor.speedtest_upload
       - sensor.fastcom_speedtest
-
+  reptile:
+    name: Reptile Lights
+    entities:
+      - switch.puff_light
+      - switch.rainbow_light
 
 # Show links to resources in log and frontend
 #introduction:
@@ -75,8 +114,12 @@ group:
 frontend:
 
 http:
+  server_port: 8123
+  base_url: https://onezero.duckdns.org
+  ssl_certificate: /etc/letsencrypt/live/onezero.duckdns.org/fullchain.pem
+  ssl_key: /etc/letsencrypt/live/onezero.duckdns.org/privkey.pem  
   # Uncomment this to add a password (recommended!)
-  # api_password: PASSWORD
+  api_password: 3711
   # Uncomment this if you are using SSL or running in Docker etc
   # base_url: example.duckdns.org:8123
 
@@ -110,12 +153,70 @@ sensor:
   minute:
     - 15
     - 45
+- platform: darksky
+  api_key: aa17365fbe0cf5e8b07d5c7d90a95e89
+  monitored_conditions:
+    - summary
+    - icon
+    - nearest_storm_distance
+    - temperature
+- platform: mqtt
+  state_topic: "owntracks/mike/phone"
+  name: "Mike Phone Battery"
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.batt }}'
+- platform: mqtt
+  state_topic: "zanzito/mike/battery_level"
+  name: "Mike Phone Battery Zanz"
+  unit_of_measurement: "%"
+  qos: 0
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike Wifi"
+  value_template: '{{ value_json.current_wifi }}'
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike App"
+  value_template: '{{ value_json.current_foreground_app }}'
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike Screen On"
+  value_template: '{{ value_json.screen_on }}'
+- platform: command_line
+  name: SSL cert expiry
+  unit_of_measurement: days
+  scan_interval: 10800
+  command: "ssl-cert-check -b -c /etc/letsencrypt/live/onezero.duckdns.org/cert.pem | awk '{ print $NF }'"
+
+
+
+binary_sensor:
+#- platform: mqtt
+#  name: "Zanzito Status"
+#  state_topic: "zanzito/mike/status"
+#  payload_on: "1"
+#  payload_off: "0"
+#  device_class: connectivity
+- platform: mqtt
+  name: "Mike Charging Status"
+  state_topic: "zanzito/mike/device_info"
+  payload_on: "True"
+  payload_off: "False"
+#  device_class: power
+  value_template: '{{ value_json.battery_charging }}'
 
 camera:
 - platform: uvc
   nvr: 192.168.9.15
   key: mHcpF7ffC9SaUh6UZikk5zwjph3INALi  
   password: !secret uvc_password
+#- platform: mqtt
+#  topic: zanzito/shared_pictures/mike
+#  name: Zanzito Camera
+#- platform: mqtt
+#  topic: zanzito/mike/picture
+#  name: Zanzito Camera 2
+
 
 # Text to speech
 tts:
@@ -131,4 +232,75 @@ switch:
     - host: 192.168.9.32
       mac: ac:cf:23:93:33:70
       name: "Rainbow Light"
+- platform: mqtt
+  name: "Test"
+  state_topic: "topic/test"
+  command_topic: "topic/test/set"
+  payload_on: "ON"
+  payload_off: "OFF"
+  optimistic: true
+  qos: 0
+  retain: true
+  value_template: '{{ value.x }}'
+
+
+notify:
+- platform: instapush
+  name: instapush
+  api_key: 57b1dbbda4c48ac0a87b23c6
+  app_secret: c2a83dc950281060c4f124b9b3e104ef
+  event: msg
+  tracker: hass
+- platform: telegram
+  name: hassbot
+  chat_id: 315019903
+
+device_tracker:
+#- platform: unifi
+#  host: 192.168.8.71
+#  port: 8443
+#  username: admin
+#  password: 83ade57
+#  site_id: montgomery
+#  track_new_devices: no
+#  interval_seconds: 12
+#  consider_home: 180
+#  verify_ssl: false
+#- platform: owntracks
+#  max_gps_accuracy: 200
+- platform: mqtt_json
+  devices:
+    mike: zanzito/mike/location
+    tammy: zanzito/tammy/location
+
+
+zone:
+- name: Home
+  latitude: 38.623597
+  longitude: -85.724111
+  radius: 100
+  icon: mdi:home
+- name: Work
+  latitude: 38.661247
+  longitude: -85.775071
+  radius: 100
+- name: Walmart
+  latitude: 38.687667
+  longitude: -85.795636
+  icon: mdi:store
+#- name: Tammys Parents
+#  latitude: 38.695968
+#  longitude: -85.780080
+#  icon: mdi:home
+
+shell_command: 
+  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01
+
+telegram_bot:
+- platform: webhooks
+#- platform: polling
+  parse_mode: html
+  api_key: 383336298:AAGJjOO-01V083VpQsWQhWf89yjdpvNaDt4
+  allowed_chat_ids:
+    - 315019903
 
