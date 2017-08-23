@@ -94,6 +94,7 @@ group:
       - sensor.mike_wifi
       - sensor.mike_phone_battery_zanz
       - switch.test
+      - sensor.door1
   internet:
     name: Internet Capacity
     entities:
@@ -187,7 +188,13 @@ sensor:
   unit_of_measurement: days
   scan_interval: 10800
   command: "ssl-cert-check -b -c /etc/letsencrypt/live/onezero.duckdns.org/cert.pem | awk '{ print $NF }'"
-
+- platform: mqtt
+  name: "door1"
+  state_topic: "esp1/door/switch"
+  payload_on: "1"
+  payload_off: "0"
+  qos: 0
+  retain: true
 
 
 binary_sensor:
@@ -242,6 +249,7 @@ switch:
   qos: 0
   retain: true
   value_template: '{{ value.x }}'
+
 
 
 notify:
