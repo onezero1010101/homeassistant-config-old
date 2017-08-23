@@ -31,7 +31,12 @@ homeassistant:
       icon: mdi:lightbulb
     switch.ge_14292_inwall_smart_switch_switch:
       friendly_name: 'Pool Pump'
-
+#    sensor.stove_water:
+#      icon: mdi:oil-temperature
+    switch.stove_blower:
+      icon: mdi:fan
+    switch.stove_pump:
+      icon: mdi:radiator
 zwave:
   usb_path: /dev/ttyACM0
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
@@ -95,6 +100,9 @@ group:
       - sensor.mike_phone_battery_zanz
       - switch.test
       - sensor.door1
+      - sensor.stove_water
+      - switch.stove_pump
+      - switch.stove_blower
   internet:
     name: Internet Capacity
     entities:
@@ -195,7 +203,10 @@ sensor:
   payload_off: "0"
   qos: 0
   retain: true
-
+- platform: mqtt
+  name: "stove water"
+  state_topic: "stove/watertemp/value"
+  unit_of_measurement: '°F'
 
 binary_sensor:
 #- platform: mqtt
@@ -249,7 +260,27 @@ switch:
   qos: 0
   retain: true
   value_template: '{{ value.x }}'
-
+- platform: mqtt
+  name: "Stove Pump"
+  state_topic: "stove/relay1/switch"
+  command_topic: "stove/gpio/14"
+  payload_on: "1"
+  payload_off: "0"
+  retain: true
+- platform: mqtt
+  name: "Stove Pump"
+  state_topic: "stove/relay1/switch"
+  command_topic: "stove/gpio/14"
+  payload_on: "1"
+  payload_off: "0"
+  retain: true
+- platform: mqtt
+  name: "Stove Blower"
+  state_topic: "stove/relay2/switch"
+  command_topic: "stove/gpio/12"
+  payload_on: "1"
+  payload_off: "0"
+  retain: true
 
 
 notify:
