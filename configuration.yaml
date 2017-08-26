@@ -30,13 +30,19 @@ homeassistant:
       emulated_hue_name: "rainbow light"
       icon: mdi:lightbulb
     switch.ge_14292_inwall_smart_switch_switch:
-      friendly_name: 'Pool Pump'
+      icon: mdi:pool 
+      friendly_name: 'Filter Pump'
 #    sensor.stove_water:
 #      icon: mdi:oil-temperature
     switch.stove_blower:
       icon: mdi:fan
+      friendly_name: 'Blower'
     switch.stove_pump:
       icon: mdi:radiator
+      friendly_name: 'Pump'
+    sensor.stove_water:
+      friendly_name: 'Water Temp'
+
 zwave:
   usb_path: /dev/ttyACM0
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
@@ -57,16 +63,20 @@ recorder:
 
 group:
   default_view:
+    name: Info
+    view: yes
+    entities:
+      - group.weather
+      - group.devices
+  home_tab:
+    name: House
     view: yes
     entities:
       - group.reptile
-      - sun.sun
-#      - switch.puff_light
-#      - switch.rainbow_light
-      - switch.ge_14292_inwall_smart_switch_switch
-      - device_tracker.mike
-      - device_tracker.tammy
-      - sensor.mike_phone_battery_zanz
+      - group.stove
+      - group.pool
+      - group.doors
+#      - group.windows
   security_tab:
     name: Security
     view: yes
@@ -94,12 +104,17 @@ group:
       - binary_sensor.zanzito_status
       - binary_sensor.mike_charging_status
       - device_tracker.mike
-      - sensor.mike_app
-      - sensor.mike_screen_on
-      - sensor.mike_wifi
-      - sensor.mike_phone_battery_zanz
-      - switch.test
-      - sensor.door1
+      - sensor.mike_phone_battery
+  weather:
+    name: Weather
+    entities:
+      - sun.sun
+      - sensor.dark_sky_icon
+      - sensor.dark_sky_nearest_storm_distance
+      - sensor.dark_sky_temperature
+  stove:
+    name: Stove Boiler
+    entities:
       - sensor.stove_water
       - switch.stove_pump
       - switch.stove_blower
@@ -115,6 +130,25 @@ group:
     entities:
       - switch.puff_light
       - switch.rainbow_light
+  pool:
+    name: Pool
+    entities:
+      - switch.ge_14292_inwall_smart_switch_switch
+  doors:
+    name: Doors
+    entities:
+      - sensor.door1
+#  windows:
+#    name: Windows
+#    entities:
+  devices:
+    name: Devices
+    entities:
+      - device_tracker.mike
+      - sensor.mike_phone_battery
+      - device_tracker.tammy
+      - sensor.tammy_phone_battery
+                  
 
 # Show links to resources in log and frontend
 #introduction:
@@ -170,13 +204,13 @@ sensor:
     - nearest_storm_distance
     - temperature
 - platform: mqtt
-  state_topic: "owntracks/mike/phone"
+  state_topic: "zanzito/mike/battery_level"
   name: "Mike Phone Battery"
   unit_of_measurement: "%"
-  value_template: '{{ value_json.batt }}'
+  qos: 0
 - platform: mqtt
-  state_topic: "zanzito/mike/battery_level"
-  name: "Mike Phone Battery Zanz"
+  state_topic: "zanzito/tammy/battery_level"
+  name: "Tammy Phone Battery"
   unit_of_measurement: "%"
   qos: 0
 - platform: mqtt
@@ -261,21 +295,14 @@ switch:
   retain: true
   value_template: '{{ value.x }}'
 - platform: mqtt
-  name: "Stove Pump"
+  name: "stove pump"
   state_topic: "stove/relay1/switch"
   command_topic: "stove/gpio/14"
   payload_on: "1"
   payload_off: "0"
   retain: true
 - platform: mqtt
-  name: "Stove Pump"
-  state_topic: "stove/relay1/switch"
-  command_topic: "stove/gpio/14"
-  payload_on: "1"
-  payload_off: "0"
-  retain: true
-- platform: mqtt
-  name: "Stove Blower"
+  name: "stove blower"
   state_topic: "stove/relay2/switch"
   command_topic: "stove/gpio/12"
   payload_on: "1"
@@ -293,6 +320,7 @@ notify:
 - platform: telegram
   name: hassbot
   chat_id: 315019903
+
 
 device_tracker:
 #- platform: unifi
@@ -323,10 +351,12 @@ zone:
   latitude: 38.661247
   longitude: -85.775071
   radius: 100
+  passive: true
 - name: Walmart
   latitude: 38.687667
   longitude: -85.795636
   icon: mdi:store
+  passive: true
 #- name: Tammys Parents
 #  latitude: 38.695968
 #  longitude: -85.780080

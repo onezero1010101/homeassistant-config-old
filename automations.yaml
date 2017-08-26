@@ -151,6 +151,18 @@
     service: notify.hassbot
     data:
       message: "Mike has {{ trigger.to_state.state }} home"
+- id: notify_mike_home_2
+  trigger:
+    platform: state
+    entity_id: device_tracker.mike
+    from: 'home'
+    to: 'not_home'
+  action:
+    service: mqtt.publish
+    data: 
+      topic: "zanzito/mike/notification"
+      payload: 'Mike has left home'
+
 - id: renew_ssl_cert
   alias: 'Auto Renew SSL Cert'
   trigger:
