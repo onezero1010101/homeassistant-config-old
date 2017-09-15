@@ -1,0 +1,92 @@
+#### VIEWS ####
+default_view:
+  name: Info
+  view: yes
+  entities:
+    - group.weather
+    - group.devices
+home_tab:
+  name: House
+  view: yes
+  entities:
+    - group.reptile
+    - group.stove
+    - group.pool
+    - group.doors
+#    - group.windows
+security_tab:
+  name: Security
+  view: yes
+  entities:
+    - camera.pool
+stats_tab:
+  name: Stats
+  view: yes
+  entities:
+    - group.internet
+media_tab:
+  name: Media
+  view: yes
+  entities:
+    - media_player.roku_63259d009925
+    - media_player.roku_3__63259d009925
+#    - media_player.roku_13c27n041227
+#    - media_player.roku_3
+zanzito_tab:
+  name: Z
+  view: yes
+  entities:
+    - group.zanzito_stats
+zanzito_stats:
+  entities:
+    - binary_sensor.zanzito_status
+    - binary_sensor.mike_charging_status
+    - device_tracker.mike
+    - sensor.mike_phone_battery
+
+################### GROUPS ######################
+
+weather:
+  name: Weather
+  entities:
+    - sun.sun
+    - sensor.dark_sky_icon
+    - sensor.dark_sky_nearest_storm_distance
+    - sensor.dark_sky_temperature
+stove:
+  name: Stove Boiler
+  entities:
+    - sensor.stove_water
+    - switch.stove_pump
+    - switch.stove_blower
+internet:
+  name: Internet Capacity
+  entities:
+    - sensor.speedtest_ping
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+    - sensor.fastcom_speedtest
+reptile:
+  name: Reptile Lights
+  entities:
+    - switch.puff_light
+    - switch.rainbow_light
+pool:
+  name: Pool
+  entities:
+    - switch.ge_14292_inwall_smart_switch_switch
+doors:
+  name: Doors
+  entities:
+    - sensor.door1
+#windows:
+#  name: Windows
+#  entities:
+devices:
+  name: Devices
+  entities:
+    - device_tracker.mike
+    - sensor.mike_phone_battery
+    - device_tracker.tammy
+    - sensor.tammy_phone_battery
+

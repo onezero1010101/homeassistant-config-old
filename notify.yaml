@@ -1,0 +1,9 @@
+- platform: instapush
+  name: instapush
+  api_key: 57b1dbbda4c48ac0a87b23c6
+  app_secret: c2a83dc950281060c4f124b9b3e104ef
+  event: msg
+  tracker: hass
+- platform: telegram
+  name: hassbot
+  chat_id: 315019903

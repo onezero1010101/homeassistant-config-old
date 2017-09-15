@@ -1,0 +1,34 @@
+- platform: orvibo
+  discovery: false
+  switches:
+    - host: 192.168.9.31
+      mac: ac:cf:23:93:2a:44
+      name: "Puff Light"
+    - host: 192.168.9.32
+      mac: ac:cf:23:93:33:70
+      name: "Rainbow Light"
+- platform: mqtt
+  name: "Test"
+  state_topic: "topic/test"
+  command_topic: "topic/test/set"
+  payload_on: "ON"
+  payload_off: "OFF"
+  optimistic: true
+  qos: 0
+  retain: true
+  value_template: '{{ value.x }}'
+- platform: mqtt
+  name: "stove pump"
+  state_topic: "stove/relay1/switch"
+  command_topic: "stove/gpio/14"
+  payload_on: "1"
+  payload_off: "0"
+  retain: true
+- platform: mqtt
+  name: "stove blower"
+  state_topic: "stove/relay2/switch"
+  command_topic: "stove/gpio/12"
+  payload_on: "1"
+  payload_off: "0"
+  retain: true
+

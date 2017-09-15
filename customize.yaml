@@ -1,0 +1,34 @@
+sensor.speedtest_ping:
+  friendly_name: 'Ping Time'
+  icon: mdi:speedometer
+sensor.speedtest_download:
+  friendly_name: 'Download'
+  icon: mdi:download
+sensor.speedtest_upload:
+  friendly_name: 'Upload'
+  icon: mdi:upload
+switch.puff_light:
+  emulated_hue: true
+  emulated_hue_name: "puff light"
+  icon: mdi:lightbulb
+switch.rainbow_light:
+  emulated_hue: true
+  emulated_hue_name: "rainbow light"
+  icon: mdi:lightbulb
+switch.ge_14292_inwall_smart_switch_switch:
+  icon: mdi:pool
+  friendly_name: 'Filter Pump'
+#sensor.stove_water:
+#  icon: mdi:oil-temperature
+switch.stove_blower:
+  icon: mdi:fan
+  friendly_name: 'Blower'
+switch.stove_pump:
+  icon: mdi:radiator
+  friendly_name: 'Pump'
+sensor.stove_water:
+  friendly_name: 'Water Temp'
+media_player.roku_3__63259d009925:
+  friendly_name: 'Roku 3 Plex'
+
+

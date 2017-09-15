@@ -8,40 +8,10 @@ homeassistant:
   elevation: 175
   # metric for Metric, imperial for Imperial
   unit_system: imperial
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  # Pick yours from here:
+  # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/Indiana/Indianapolis
-
-  customize:
-    sensor.speedtest_ping:
-      friendly_name: 'Ping Time'
-      icon: mdi:speedometer
-    sensor.speedtest_download:
-      friendly_name: 'Download'
-      icon: mdi:download
-    sensor.speedtest_upload:
-      friendly_name: 'Upload'
-      icon: mdi:upload
-    switch.puff_light:
-      emulated_hue: true
-      emulated_hue_name: "puff light"
-      icon: mdi:lightbulb
-    switch.rainbow_light:
-      emulated_hue: true
-      emulated_hue_name: "rainbow light"
-      icon: mdi:lightbulb
-    switch.ge_14292_inwall_smart_switch_switch:
-      icon: mdi:pool 
-      friendly_name: 'Filter Pump'
-#    sensor.stove_water:
-#      icon: mdi:oil-temperature
-    switch.stove_blower:
-      icon: mdi:fan
-      friendly_name: 'Blower'
-    switch.stove_pump:
-      icon: mdi:radiator
-      friendly_name: 'Pump'
-    sensor.stove_water:
-      friendly_name: 'Water Temp'
+  customize: !include customize.yaml
 
 zwave:
   usb_path: /dev/ttyACM0
@@ -60,316 +30,77 @@ automation: !include automations.yaml
 
 recorder:
   purge_days: 3
-
-group:
-  default_view:
-    name: Info
-    view: yes
+  exclude:
+    domains:
+      - automation
+      - updater
+      - group
+      - script
     entities:
-      - group.weather
-      - group.devices
-  home_tab:
-    name: House
-    view: yes
-    entities:
-      - group.reptile
-      - group.stove
-      - group.pool
-      - group.doors
-#      - group.windows
-  security_tab:
-    name: Security
-    view: yes
-    entities:
-      - camera.pool
-  stats_tab:
-    name: Stats
-    view: yes
-    entities:
-      - group.internet
-  media_tab:
-    name: Media
-    view: yes
-    entities:
-      - media_player.roku_63259d009925
-      - media_player.roku_13c27n041227
-      - media_player.roku_3
-  zanzito_tab:
-    name: Z
-    view: yes
-    entities:
-      - group.zanzito_stats
-  zanzito_stats:
-    entities:
-      - binary_sensor.zanzito_status
-      - binary_sensor.mike_charging_status
-      - device_tracker.mike
-      - sensor.mike_phone_battery
-  weather:
-    name: Weather
-    entities:
+      - sensor.average_load_15m
+      - sensor.since_last_boot
       - sun.sun
-      - sensor.dark_sky_icon
-      - sensor.dark_sky_nearest_storm_distance
-      - sensor.dark_sky_temperature
-  stove:
-    name: Stove Boiler
-    entities:
-      - sensor.stove_water
-      - switch.stove_pump
-      - switch.stove_blower
-  internet:
-    name: Internet Capacity
-    entities:
-      - sensor.speedtest_ping
-      - sensor.speedtest_download
-      - sensor.speedtest_upload
-      - sensor.fastcom_speedtest
-  reptile:
-    name: Reptile Lights
-    entities:
-      - switch.puff_light
-      - switch.rainbow_light
-  pool:
-    name: Pool
-    entities:
-      - switch.ge_14292_inwall_smart_switch_switch
-  doors:
-    name: Doors
-    entities:
-      - sensor.door1
-#  windows:
-#    name: Windows
-#    entities:
-  devices:
-    name: Devices
-    entities:
-      - device_tracker.mike
-      - sensor.mike_phone_battery
-      - device_tracker.tammy
-      - sensor.tammy_phone_battery
-                  
 
-# Show links to resources in log and frontend
-#introduction:
+group: !include groups.yaml
 
-# Enables the frontend
-frontend:
-
+# Show links to resources in log and frontend introduction: Enables the
+# frontend
+frontend: 
 http:
   server_port: 8123
-  base_url: https://onezero.duckdns.org
-  ssl_certificate: /etc/letsencrypt/live/onezero.duckdns.org/fullchain.pem
-  ssl_key: /etc/letsencrypt/live/onezero.duckdns.org/privkey.pem  
+  base_url: !secret base_url
+  ssl_certificate: !secret ssl_cert
+  ssl_key: !secret ssl_key
   # Uncomment this to add a password (recommended!)
-  api_password: 3711
+  api_password: !secret password
   # Uncomment this if you are using SSL or running in Docker etc
   # base_url: example.duckdns.org:8123
-
 # Checks for available updates
 updater:
-
 # Discover some devices automatically
 discovery:
-
-# Allows you to issue voice commands from the frontend in enabled browsers
+# Allows you to issue voice commands from the frontend in enabled
+# browsers
 conversation:
-
 # Enables support for tracking state changes over time.
 history:
-
 # View all events in a logbook
 logbook:
+  exclude:
+    entities:
+      - sun.sun
+#      - sensor.dark_sky_minutely_summary
+#      - sensor.dark_sky_hourly_summary
+#      - sensor.dark_sky_daily_summary
 
 # Track the sun
 sun:
-
 # Weather Prediction
-sensor:
-- platform: yr
-- platform: speedtest
-  monitored_conditions:
-    - ping
-    - download
-    - upload
-- platform: fastdotcom
-  minute:
-    - 15
-    - 45
-- platform: darksky
-  api_key: aa17365fbe0cf5e8b07d5c7d90a95e89
-  monitored_conditions:
-    - summary
-    - icon
-    - nearest_storm_distance
-    - temperature
-- platform: mqtt
-  state_topic: "zanzito/mike/battery_level"
-  name: "Mike Phone Battery"
-  unit_of_measurement: "%"
-  qos: 0
-- platform: mqtt
-  state_topic: "zanzito/tammy/battery_level"
-  name: "Tammy Phone Battery"
-  unit_of_measurement: "%"
-  qos: 0
-- platform: mqtt
-  state_topic: zanzito/mike/device_info
-  name: "Mike Wifi"
-  value_template: '{{ value_json.current_wifi }}'
-- platform: mqtt
-  state_topic: zanzito/mike/device_info
-  name: "Mike App"
-  value_template: '{{ value_json.current_foreground_app }}'
-- platform: mqtt
-  state_topic: zanzito/mike/device_info
-  name: "Mike Screen On"
-  value_template: '{{ value_json.screen_on }}'
-- platform: command_line
-  name: SSL cert expiry
-  unit_of_measurement: days
-  scan_interval: 10800
-  command: "ssl-cert-check -b -c /etc/letsencrypt/live/onezero.duckdns.org/cert.pem | awk '{ print $NF }'"
-- platform: mqtt
-  name: "door1"
-  state_topic: "esp1/door/switch"
-  payload_on: "1"
-  payload_off: "0"
-  qos: 0
-  retain: true
-- platform: mqtt
-  name: "stove water"
-  state_topic: "stove/watertemp/value"
-  unit_of_measurement: '°F'
+sensor: !include sensors.yaml
 
-binary_sensor:
-#- platform: mqtt
-#  name: "Zanzito Status"
-#  state_topic: "zanzito/mike/status"
-#  payload_on: "1"
-#  payload_off: "0"
-#  device_class: connectivity
-- platform: mqtt
-  name: "Mike Charging Status"
-  state_topic: "zanzito/mike/device_info"
-  payload_on: "True"
-  payload_off: "False"
-#  device_class: power
-  value_template: '{{ value_json.battery_charging }}'
+binary_sensor: !include binary_sensors.yaml
 
-camera:
-- platform: uvc
-  nvr: 192.168.9.15
-  key: mHcpF7ffC9SaUh6UZikk5zwjph3INALi  
-  password: !secret uvc_password
-#- platform: mqtt
-#  topic: zanzito/shared_pictures/mike
-#  name: Zanzito Camera
-#- platform: mqtt
-#  topic: zanzito/mike/picture
-#  name: Zanzito Camera 2
-
-
+camera: !include camera.yaml
 # Text to speech
 tts:
   platform: google
 
-switch:
-- platform: orvibo
-  discovery: false
-  switches:
-    - host: 192.168.9.31
-      mac: ac:cf:23:93:2a:44
-      name: "Puff Light"
-    - host: 192.168.9.32
-      mac: ac:cf:23:93:33:70
-      name: "Rainbow Light"
-- platform: mqtt
-  name: "Test"
-  state_topic: "topic/test"
-  command_topic: "topic/test/set"
-  payload_on: "ON"
-  payload_off: "OFF"
-  optimistic: true
-  qos: 0
-  retain: true
-  value_template: '{{ value.x }}'
-- platform: mqtt
-  name: "stove pump"
-  state_topic: "stove/relay1/switch"
-  command_topic: "stove/gpio/14"
-  payload_on: "1"
-  payload_off: "0"
-  retain: true
-- platform: mqtt
-  name: "stove blower"
-  state_topic: "stove/relay2/switch"
-  command_topic: "stove/gpio/12"
-  payload_on: "1"
-  payload_off: "0"
-  retain: true
+switch: !include switches.yaml
 
+notify: !include notify.yaml
 
-notify:
-- platform: instapush
-  name: instapush
-  api_key: 57b1dbbda4c48ac0a87b23c6
-  app_secret: c2a83dc950281060c4f124b9b3e104ef
-  event: msg
-  tracker: hass
-- platform: telegram
-  name: hassbot
-  chat_id: 315019903
+device_tracker: !include device_trackers.yaml
 
+zone: !include zones.yaml
 
-device_tracker:
-#- platform: unifi
-#  host: 192.168.8.71
-#  port: 8443
-#  username: admin
-#  password: 83ade57
-#  site_id: montgomery
-#  track_new_devices: no
-#  interval_seconds: 12
-#  consider_home: 180
-#  verify_ssl: false
-#- platform: owntracks
-#  max_gps_accuracy: 200
-- platform: mqtt_json
-  devices:
-    mike: zanzito/mike/location
-    tammy: zanzito/tammy/location
-
-
-zone:
-- name: Home
-  latitude: 38.623597
-  longitude: -85.724111
-  radius: 100
-  icon: mdi:home
-- name: Work
-  latitude: 38.661247
-  longitude: -85.775071
-  radius: 100
-  passive: true
-- name: Walmart
-  latitude: 38.687667
-  longitude: -85.795636
-  icon: mdi:store
-  passive: true
-#- name: Tammys Parents
-#  latitude: 38.695968
-#  longitude: -85.780080
-#  icon: mdi:home
-
-shell_command: 
-  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01
+shell_command:
+  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01 
 
 telegram_bot:
 - platform: webhooks
 #- platform: polling
   parse_mode: html
-  api_key: 383336298:AAGJjOO-01V083VpQsWQhWf89yjdpvNaDt4
+  api_key: !secret telegram_api
   allowed_chat_ids:
     - 315019903
 

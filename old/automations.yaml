@@ -22,7 +22,7 @@
     entity_id:
       - switch.puff_light
       - switch.rainbow_light
-- id: check_puff_light
+- id: check_puff_light  
   alias: Check Puff Light
   trigger:
     platform: state
@@ -117,7 +117,7 @@
   trigger:
     platform: time
     hours: 2
-    minutes: 0
+    minutes:  0
     seconds: 0
   action:
     service: homeassistant.turn_off
@@ -131,7 +131,7 @@
   action:
     service: notify.hassbot
     data_template:
-      message: "Pool Pump has turned from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+      message: "Pool Pump has turned from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"  
 - id: test_switch
   alias: Test Switch Notify
   trigger:
@@ -140,7 +140,7 @@
   action:
     service: notify.hassbot
     data_template:
-      message: "Test Switch from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+      message: "Test Switch from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"  
 - id: notify_mike_home
   trigger:
     platform: zone
@@ -159,9 +159,10 @@
     to: 'not_home'
   action:
     service: mqtt.publish
-    data:
+    data: 
       topic: "zanzito/mike/notification"
       payload: 'Mike has left home'
+
 - id: renew_ssl_cert
   alias: 'Auto Renew SSL Cert'
   trigger:
@@ -170,8 +171,9 @@
     below: 29
   action:
     service: shell_command.renew_ssl
+
 - id: ping_pong
-  trigger:
+  trigger: 
     platform: event
     event_type: telegram_command
     event_data:

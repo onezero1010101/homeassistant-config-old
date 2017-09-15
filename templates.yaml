@@ -1,0 +1,11 @@
+- platform: template
+  sensors:
+    battery_phone:
+      unit_of_measurement: '%'
+      value_template: "{{states.sensor.mike_phone_battery.state}}"
+#              {{ states.binary_sensor.mike_charging_status|round }}
+#          {% else %}
+#              {{ states.binary_sensor.mike_charging_status }}
+#          {%- endif %}
+      icon_template: "{%- if states.sensor.mike_phone_battery.state >= '95' %}mdi:battery{%- elif states.sensor.mike_phone_battery.state == '100' %}mdi:battery{%- elif states.sensor.mike_phone_battery.state <= '15' %}mdi:battery-outline{% else %}mdi:battery-{{(states.sensor.mike_phone_battery.state|float / 10)|round*10}}{%- endif %}"
+

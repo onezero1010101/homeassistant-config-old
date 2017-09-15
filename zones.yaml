@@ -1,0 +1,19 @@
+- name: Home
+  latitude: 38.623597
+  longitude: -85.724111
+  radius: 100
+  icon: mdi:home
+- name: Work
+  latitude: 38.661247
+  longitude: -85.775071
+  radius: 100
+  passive: true
+- name: Walmart
+  latitude: 38.687667
+  longitude: -85.795636
+  icon: mdi:store
+  passive: true
+#- name: Tammys Parents
+#  latitude: 38.695968
+#  longitude: -85.780080
+#  icon: mdi:home

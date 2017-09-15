@@ -1,0 +1,77 @@
+- platform: yr
+- platform: speedtest
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+- platform: fastdotcom
+  minute:
+    - 15
+    - 45
+- platform: darksky
+  api_key: aa17365fbe0cf5e8b07d5c7d90a95e89
+  monitored_conditions:
+    - summary
+    - icon
+    - nearest_storm_distance
+    - temperature
+
+- platform: mqtt
+  state_topic: "zanzito/mike/battery_level"
+  name: "Mike Phone Battery"
+  unit_of_measurement: "%"
+  qos: 0
+
+- platform: mqtt
+  state_topic: "zanzito/tammy/battery_level"
+  name: "Tammy Phone Battery"
+  unit_of_measurement: "%"
+  qos: 0
+
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike Wifi"
+  value_template: '{{ value_json.current_wifi }}'
+
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike App"
+  value_template: '{{ value_json.current_foreground_app }}'
+
+- platform: mqtt
+  state_topic: zanzito/mike/device_info
+  name: "Mike Screen On"
+  value_template: '{{ value_json.screen_on }}'
+
+- platform: command_line
+  name: SSL cert expiry
+  unit_of_measurement: days
+  scan_interval: 10800
+  command: "ssl-cert-check -b -c /etc/letsencrypt/live/onezero.duckdns.org/cert.pem | awk '{ print $NF }'"
+
+- platform: mqtt
+  name: "door1"
+  state_topic: "esp1/door/switch"
+  payload_on: "1"
+  payload_off: "0"
+  qos: 0
+  retain: true
+- platform: mqtt
+  name: "stove water"
+  state_topic: "stove/watertemp/value"
+  unit_of_measurement: '°F'
+
+
+
+- platform: template
+  sensors:
+    battery_phone:
+      unit_of_measurement: '%'
+      value_template: "{{states.sensor.mike_phone_battery.state}}"
+#              {{ states.binary_sensor.mike_charging_status|round }}
+#          {% else %}
+#              {{ states.binary_sensor.mike_charging_status }}
+#          {%- endif %}
+      icon_template: "{%- if states.sensor.mike_phone_battery.state >= '95' %}mdi:battery{%- elif states.sensor.mike_phone_battery.state == '100' %}mdi:battery{%- elif states.sensor.mike_phone_battery.state <= '15' %}mdi:battery-outline{% else %}mdi:battery-{{(states.sensor.mike_phone_battery.state|float / 10)|round*10}}{%- endif %}"
+
+

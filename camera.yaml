@@ -1,0 +1,11 @@
+- platform: uvc
+  nvr: 192.168.9.15
+  key: mHcpF7ffC9SaUh6UZikk5zwjph3INALi
+  password: !secret uvc_password
+#- platform: mqtt
+#  topic: zanzito/shared_pictures/mike
+#  name: Zanzito Camera
+#- platform: mqtt
+#  topic: zanzito/mike/picture
+#  name: Zanzito Camera 2
+
