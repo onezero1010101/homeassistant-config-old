@@ -28,18 +28,18 @@ emulated_hue:
 
 automation: !include automations.yaml
 
-recorder:
-  purge_days: 3
-  exclude:
-    domains:
-      - automation
-      - updater
-      - group
-      - script
-    entities:
-      - sensor.average_load_15m
-      - sensor.since_last_boot
-      - sun.sun
+#recorder:
+#  purge_days: 3
+#  exclude:
+#    domains:
+#      - automation
+#      - updater
+#      - group
+#      - script
+#    entities:
+#      - sensor.average_load_15m
+#      - sensor.since_last_boot
+#      - sun.sun
 
 group: !include groups.yaml
 

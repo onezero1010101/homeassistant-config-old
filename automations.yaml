@@ -101,28 +101,28 @@
     service: homeassistant.turn_off
     entity_id:
       - switch.ge_14292_inwall_smart_switch_switch
-- id: pool_pump_3_on
-  alias: Pool Pump Cycle 3 On
-  trigger:
-    platform: time
-    hours: 0
-    minutes: 0
-    seconds: 0
-  action:
-    service: homeassistant.turn_on
-    entity_id:
-      - switch.ge_14292_inwall_smart_switch_switch
-- id: pool_pump_3_off
-  alias: Pool Pump Cycle 3 Off
-  trigger:
-    platform: time
-    hours: 2
-    minutes: 0
-    seconds: 0
-  action:
-    service: homeassistant.turn_off
-    entity_id:
-      - switch.ge_14292_inwall_smart_switch_switch
+#- id: pool_pump_3_on
+#  alias: Pool Pump Cycle 3 On
+#  trigger:
+#    platform: time
+#    hours: 0
+#    minutes: 0
+#    seconds: 0
+#  action:
+#    service: homeassistant.turn_on
+#    entity_id:
+#      - switch.ge_14292_inwall_smart_switch_switch
+#- id: pool_pump_3_off
+#  alias: Pool Pump Cycle 3 Off
+#  trigger:
+#    platform: time
+#    hours: 2
+#    minutes: 0
+#    seconds: 0
+#  action:
+#    service: homeassistant.turn_off
+#    entity_id:
+#      - switch.ge_14292_inwall_smart_switch_switch
 - id: pool_pump_notify
   alias: Pool Pump Notify
   trigger:
