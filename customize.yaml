@@ -7,6 +7,13 @@ sensor.speedtest_download:
 sensor.speedtest_upload:
   friendly_name: 'Upload'
   icon: mdi:upload
+sensor.climate_temperature:
+  icon: mdi:thermometer-lines
+sensor.thermostat_temperature:
+  friendly_name: 'Temperature'
+sensor.thermostat_relative_humidity:
+  friendly_name: 'Humidity'
+  icon: mdi:water-percent
 switch.puff_light:
   emulated_hue: true
   emulated_hue_name: "puff light"
@@ -26,9 +33,11 @@ switch.stove_blower:
 switch.stove_pump:
   icon: mdi:radiator
   friendly_name: 'Pump'
+  emulated_hue_hidden: false
 sensor.stove_water:
   friendly_name: 'Water Temp'
 media_player.roku_3__63259d009925:
   friendly_name: 'Roku 3 Plex'
-
+script.thermostat:
+  emulated_hue_hidden: false
 

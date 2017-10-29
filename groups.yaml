@@ -9,6 +9,7 @@ home_tab:
   name: House
   view: yes
   entities:
+    - group.hvac
     - group.reptile
     - group.stove
     - group.pool
@@ -89,4 +90,16 @@ devices:
     - sensor.mike_phone_battery
     - device_tracker.tammy
     - sensor.tammy_phone_battery
-
+hvac:
+  name: Thermostat
+  entities:
+    - input_select.hvac_operation_mode
+    - input_select.hvac_fan_mode
+    - input_number.hvac_target_temp
+#    - sensor.climate_temperature
+    - sensor.climate_temperature
+    - sensor.climate_fan_state
+    - sensor.climate_operating_state
+#    - climate.thermostat_heating_1
+    - sensor.thermostat_temperature
+    - sensor.thermostat_relative_humidity

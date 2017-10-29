@@ -1,0 +1,8 @@
+#input_slider:
+hvac_target_temp:
+  name: 'Set Target Temp'
+  min: 60
+  max: 80
+  step: 1
+#  initial: 70
+

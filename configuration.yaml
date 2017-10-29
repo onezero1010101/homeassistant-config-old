@@ -17,7 +17,7 @@ zwave:
   usb_path: /dev/ttyACM0
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
   autoheal: true
-
+  polling_interval: 45000
 mqtt:
   broker: 127.0.0.1
   port: 1883
@@ -25,6 +25,10 @@ mqtt:
 emulated_hue:
   host_ip: 192.168.9.42
   type: alexa
+  expose_by_default: false
+  off_maps_to_on_domains:
+#  exposed_domains:
+#    - script
 
 automation: !include automations.yaml
 
@@ -85,6 +89,8 @@ camera: !include camera.yaml
 tts:
   platform: google
 
+script: !include scripts.yaml
+
 switch: !include switches.yaml
 
 notify: !include notify.yaml
@@ -92,6 +98,10 @@ notify: !include notify.yaml
 device_tracker: !include device_trackers.yaml
 
 zone: !include zones.yaml
+
+input_select: !include input_selects.yaml
+
+input_number: !include input_numbers.yaml
 
 shell_command:
   renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01 

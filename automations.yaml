@@ -180,3 +180,123 @@
     service: notify.hassbot
     data:
       message: 'pong'
+- id: climate_set_temp
+#####
+### Sets the downstairs thermostat temperature when the hvac_target_temp input_slider is changed
+#####
+  alias: 'Set thermostat temperature based on input_slider'
+  trigger:
+    - platform: state
+      entity_id: input_number.hvac_target_temp
+  action:
+    - service: climate.set_temperature
+      data_template:
+        entity_id: >-
+          {% if is_state('input_select.hvac_operation_mode', 'Heat') %}
+              climate.thermostat_heating_1
+          {% elif is_state('input_select.hvac_operation_mode', 'Cool') %}
+              climate.thermostat_cooling_1
+          {% endif %}
+        temperature: "{{ states('input_number.hvac_target_temp') }}"
+- id: climate_set_op_mode
+#####
+### Sets the downstairs thermostat operation_mode when the hvac_operation_mode input_select is changed
+#####
+  alias: 'Set downstairs thermostat operation_mode based on input_select'
+  trigger:
+    platform: state
+    entity_id: input_select.hvac_operation_mode
+  action:
+    service: climate.set_operation_mode
+    entity_id: climate.thermostat_cooling_1
+    data_template:
+      operation_mode: "{{ states('input_select.hvac_operation_mode') }}"
+
+- id: climate_set_op_mode_manual
+#####
+### Sets the hvac_operation_mode input_select when the downstairsthermostat operation_mode is manually changed
+#####
+  alias: 'Set input_select based on downstairs thermostat operation_mode'
+  trigger:
+    platform: state
+    entity_id: climate.thermostat_cooling_1
+  condition:
+    condition: template
+    value_template: '{{ trigger.to_state.attributes.operation_mode != trigger.from_state.attributes.operation_mode }}'
+  action:
+    service: input_select.select_option
+    entity_id: input_select.hvac_operation_mode
+    data_template:
+      option: '{{ states.climate.thermostat_cooling_1.attributes.operation_mode }}'
+#####
+### Sets the downstairs thermostat fan_mode when the hvac_fan_mode input_select is changed
+#####
+- id: climate_set_fan_mode
+  alias: 'Set thermostat fan_mode based on input_select'
+  trigger:
+    platform: state
+    entity_id: input_select.hvac_fan_mode
+  action:
+    service: climate.set_fan_mode
+    entity_id: climate.thermostat_cooling_1
+    data_template:
+      fan_mode: >-
+          {%- if is_state('input_select.hvac_fan_mode', 'Auto') -%}
+              Auto Low
+          {%- elif is_state('input_select.hvac_fan_mode', 'On') -%}
+              On Low
+          {%- endif -%}
+#####
+### Sets the hvac_fan_mode input_select when the downstairs thermostat fan_mode is manually changed
+#####
+- id: climate_set_fan_mode_manual
+  alias: 'Set input_select based on thermostat fan_mode'
+  trigger:
+    platform: state
+    entity_id: climate.thermostat_cooling_1
+  condition:
+    condition: template
+    value_template: '{{ trigger.to_state.attributes.fan_mode != trigger.from_state.attributes.fan_mode }}'
+  action:
+    service: input_select.select_option
+    entity_id: input_select.hvac_fan_mode
+    data_template:
+      option: >-
+          {%- if is_state_attr('climate.thermostat_cooling_1', 'fan_mode', 'Auto Low') -%}
+              Auto
+          {%- elif is_state_attr('climate.thermostat_cooling_1', 'fan_mode', 'On Low') -%}
+              On
+          {%- endif -%}
+
+- id: thermostat_pump
+  alias: 'Toggle pump when call for heat and not freezing'
+  trigger:
+    platform: state
+    entity_id: climate.thermostat_heating_1
+  condition:
+    - condition: template
+      value_template: '{{ trigger.to_state.attributes.operating_state != trigger.from_state.attributes.operating_state }}'
+    - condition: numeric_state
+      entity_id: sensor.dark_sky_temperature
+      above: '40'
+  action:
+    service_template: >
+      {% if is_state_attr('climate.thermostat_heating_1', 'operating_state', 'Heating') %}
+        switch.turn_on
+      {% else %}
+        switch.turn_off
+      {% endif %}
+    entity_id: switch.stove_pump
+
+- id: pump_antifreeze
+  alias: 'Toggle pump on when temp drops'
+  trigger:
+    platform: state
+    entity_id: sensor.dark_sky_temperature
+  condition:
+    condition: numeric_state
+    entity_id: sensor.dark_sky_temperature
+    below: '39'
+  action:
+    entity_id: switch.stove_pump
+    service: switch.turn_on
