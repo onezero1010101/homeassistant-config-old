@@ -5,4 +5,4 @@ hvac_target_temp:
   max: 80
   step: 1
 #  initial: 70
-
+  mode: box
