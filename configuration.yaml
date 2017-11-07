@@ -18,6 +18,7 @@ zwave:
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
   autoheal: true
   polling_interval: 45000
+
 mqtt:
   broker: 127.0.0.1
   port: 1883

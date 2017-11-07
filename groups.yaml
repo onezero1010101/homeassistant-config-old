@@ -19,6 +19,7 @@ security_tab:
   name: Security
   view: yes
   entities:
+    - camera.front_door
     - camera.pool
 stats_tab:
   name: Stats
@@ -38,12 +39,7 @@ zanzito_tab:
   view: yes
   entities:
     - group.zanzito_stats
-zanzito_stats:
-  entities:
-    - binary_sensor.zanzito_status
-    - binary_sensor.mike_charging_status
-    - device_tracker.mike
-    - sensor.mike_phone_battery
+    - group.test
 
 ################### GROUPS ######################
 
@@ -103,3 +99,15 @@ hvac:
 #    - climate.thermostat_heating_1
     - sensor.thermostat_temperature
     - sensor.thermostat_relative_humidity
+
+zanzito_stats:
+  entities:
+    - binary_sensor.zanzito_status
+    - binary_sensor.mike_charging_status
+    - device_tracker.mike
+    - sensor.mike_phone_battery
+
+test:
+  entities:
+    - climate.thermostat_heating_1
+
