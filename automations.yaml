@@ -1,3 +1,10 @@
+- id: heal_zwave
+  alias: 'ZWave Heal at 2:31 AM'
+  trigger:
+    platform: time
+    at: '2:31:00'
+  action:
+    service: zwave.heal_network
 - id: reptile_lights_on
   alias: Reptile Lights On
   trigger:
@@ -64,6 +71,10 @@
     hours: 8
     minutes: 0
     seconds: 0
+  condition:
+    condition: state
+    entity_id: input_boolean.poolpump_automation
+    state: 'on'
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -75,6 +86,10 @@
     hours: 12
     minutes: 0
     seconds: 0
+  condition:
+    condition: state
+    entity_id: input_boolean.poolpump_automation
+    state: 'on'
   action:
     service: homeassistant.turn_off
     entity_id:

@@ -13,6 +13,8 @@ homeassistant:
   time_zone: America/Indiana/Indianapolis
   customize: !include customize.yaml
 
+map:
+
 zwave:
   usb_path: /dev/ttyACM0
   config_path: /srv/hass/src/python-openzwave/openzwave/config/
@@ -103,6 +105,8 @@ zone: !include zones.yaml
 input_select: !include input_selects.yaml
 
 input_number: !include input_numbers.yaml
+
+input_boolean: !include input_booleans.yaml
 
 shell_command:
   renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01 

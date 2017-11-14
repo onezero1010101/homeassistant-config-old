@@ -40,7 +40,8 @@ zanzito_tab:
   entities:
     - group.zanzito_stats
     - group.test
-
+    - input_boolean.poolpump_automation
+#    - automations_master
 ################### GROUPS ######################
 
 weather:
@@ -110,4 +111,15 @@ zanzito_stats:
 test:
   entities:
     - climate.thermostat_heating_1
+
+automations:
+  entities:
+    - automation.pool_pump_cycle_1_off
+    - automation.pool_pump_cycle_1_on
+    - automation.pool_pump_cycle_2_off
+    - automation.pool_pump_cycle_2_on
+
+automations_master:
+  entities:
+    - group.automations
 
