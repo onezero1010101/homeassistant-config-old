@@ -5,8 +5,30 @@
     at: '2:31:00'
   action:
     service: zwave.heal_network
-- id: reptile_lights_on
-  alias: Reptile Lights On
+- id: rainbow_light_on
+  alias: Rainbow Light On
+  trigger:
+    platform: time
+    hours: 7
+    minutes: 30
+    seconds: 0
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: 'binary_sensor.mike_charging_status'
+        state: 'off'
+      - condition: state
+        entity_id: 'binary_sensor.tammy_charging_status'
+        state: 'off'
+#      - condition: template
+#        value_template: '{{states.binary_sensor.mike_charging_status.state}}'
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.rainbow_light
+- id: puff_light_on
+  alias: Puff Light On
   trigger:
     platform: time
     hours: 7
@@ -16,9 +38,42 @@
     service: homeassistant.turn_on
     entity_id:
       - switch.puff_light
+- id: rainbow_light_off_930
+  alias: Rainbow Light Off at 930
+  trigger:
+    - platform: time
+      hours: 21
+      minutes: 30
+      seconds: 0
+#    - platform: state
+#      entity_id: group.phones_charging
+#      to: 
+  action:
+    service: homeassistant.turn_off
+    entity_id:
       - switch.rainbow_light
-- id: reptile_lights_off
-  alias: Reptile Lights Off
+- id: rainbow_light_off_bedtime
+  alias: Rainbow Light Off at Bedtime
+  trigger:
+    - platform: state
+      entity_id: 'binary_sensor.mike_charging_status'
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: 'binary_sensor.tammy_charging_status'
+        state: 'on'
+      - condition: template
+#        entity_id: sun.sun
+        value_template: '{{ state.sun.sun.attributes.elevation < -4}}'
+#        below: -4.0
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.rainbow_light
+- id: puff_light_off
+  alias: Puff Light Off
   trigger:
     platform: time
     hours: 21
@@ -28,7 +83,6 @@
     service: homeassistant.turn_off
     entity_id:
       - switch.puff_light
-      - switch.rainbow_light
 - id: check_puff_light
   alias: Check Puff Light
   trigger:
@@ -49,9 +103,23 @@
     entity_id: switch.rainbow_light
     to: 'off'
   condition:
-    condition: time
-    after: '07:30:00'
-    before: '21:30:00'
+    condition: and
+    conditions:
+      - condition: time
+        after: '07:30:00'
+        before: '21:30:00'
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: '{{ states.sun.sun.attributes.elecation > 4 }}' 
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: 'binary_sensor.mike_charging_status'
+                state: 'off'
+              - condition: state
+                entity_id: 'binary_sensor.tammy_charging_status'
+                state: 'off'
   action:
     service: homeassistant.turn_on
     entity_id: switch.rainbow_light
@@ -71,10 +139,10 @@
     hours: 8
     minutes: 0
     seconds: 0
-  condition:
-    condition: state
-    entity_id: input_boolean.poolpump_automation
-    state: 'on'
+#  condition:
+#    condition: state
+#    entity_id: input_boolean.poolpump_automation
+#    state: 'on'
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -327,3 +395,39 @@
   action:
     entity_id: switch.stove_pump
     service: switch.turn_on
+
+- id: stove_overtemp
+  alias: 'Toggle pump on when stove overtemp'
+  trigger:
+    platform: state
+    entity_id: sensor.stove_water
+  condition:
+    condition: numeric_state
+    entity_id: sensor.stove_water
+    above: '185'
+  action:
+    entity_id: switch.stove_pump
+    service: switch.turn_on
+
+
+### LED SCRIPT
+- alias: "Porch Animation Speed"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_number.porch_animation_speed
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "bruh/porch/set"
+        payload: '{"transition":{{ trigger.to_state.state | int }}}'
+#- alias: "Stove Shutoff"
+#  trigger:
+#    platform: template
+#    value_template: "{% if states('sensor.stove_water') | float < 180 %}true{% endif %}"
+#  action:
+#    entity_id: switch.stove_blower
+#    service: switch.turn_off
+
+

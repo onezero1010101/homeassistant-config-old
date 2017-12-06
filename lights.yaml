@@ -1,0 +1,52 @@
+- platform: mqtt_json
+  name: "Porch Strip"
+  state_topic: "bruh/porch"
+  command_topic: "bruh/porch/set"
+  effect: true
+  effect_list:
+    - bpm  
+    - candy cane  
+    - animations  
+    - template  
+    - blendwave  
+    - beatwave  
+    - blur  
+    - confetti  
+    - confetti 2  
+    - confetti pal  
+    - dotbeat  
+    - easing  
+    - every n example  
+    - fill grad  
+    - inoise8 mover  
+    - inoise8 pal  
+    - noise 16 1  
+    - noise 16 2  
+    - noise 16 3  
+    - one sine pal  
+    - palette cross fade  
+    - rainbow march  
+    - rainbow beat  
+    - ripple pal  
+    - sinelon  
+    - cyclon rainbow  
+    - dots  
+    - fire  
+    - glitter  
+    - juggle  
+    - lightning  
+    - noise  
+    - police all  
+    - police one  
+    - rainbow  
+    - rainbow with glitter  
+    - ripple  
+    - sinelon  
+    - solid  
+    - twinkle
+  brightness: true
+  flash: true
+  rgb: true
+  optimistic: false
+  qos: 0
+

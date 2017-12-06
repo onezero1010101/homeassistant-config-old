@@ -92,6 +92,8 @@ camera: !include camera.yaml
 tts:
   platform: google
 
+light: !include lights.yaml
+
 script: !include scripts.yaml
 
 switch: !include switches.yaml
@@ -110,6 +112,10 @@ input_boolean: !include input_booleans.yaml
 
 shell_command:
   renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01 
+
+#usps:
+#  username: !secret uspsuid
+#  password: !secret uspspwd
 
 telegram_bot:
 - platform: webhooks

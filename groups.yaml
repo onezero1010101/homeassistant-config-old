@@ -40,7 +40,10 @@ zanzito_tab:
   entities:
     - group.zanzito_stats
     - group.test
-    - input_boolean.poolpump_automation
+#    - input_boolean.poolpump_automation
+    - automation.auto_renew_ssl_cert
+    - light.porch_strip
+    - input_number.porch_animation_speed
 #    - automations_master
 ################### GROUPS ######################
 
@@ -104,6 +107,7 @@ hvac:
 zanzito_stats:
   entities:
     - binary_sensor.zanzito_status
+    - binary_sensor.tammy_charging_status
     - binary_sensor.mike_charging_status
     - device_tracker.mike
     - sensor.mike_phone_battery
