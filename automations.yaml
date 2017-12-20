@@ -1,8 +1,11 @@
-- id: heal_zwave1
-  alias: 'ZWave Heal at 2:31 AM'
+- id: heal_zwave
+  alias: 'ZWave Heal'
   trigger:
     platform: time
-    at: '2:31:00'
+    #at: '2:30:00'
+    hours: '/2'
+    minutes: 00
+    seconds: 00
   action:
     service: zwave.heal_network
 
