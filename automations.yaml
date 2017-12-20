@@ -12,15 +12,15 @@
     hours: 7
     minutes: 30
     seconds: 0
-  condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: 'binary_sensor.mike_charging_status'
-        state: 'off'
-      - condition: state
-        entity_id: 'binary_sensor.tammy_charging_status'
-        state: 'off'
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: state
+#        entity_id: 'binary_sensor.mike_charging_status'
+#        state: 'off'
+#      - condition: state
+#        entity_id: 'binary_sensor.tammy_charging_status'
+#        state: 'off'
 #      - condition: template
 #        value_template: '{{states.binary_sensor.mike_charging_status.state}}'
   action:
@@ -103,23 +103,21 @@
     entity_id: switch.rainbow_light
     to: 'off'
   condition:
-    condition: and
-    conditions:
-      - condition: time
-        after: '07:30:00'
-        before: '21:30:00'
-      - condition: or
-        conditions:
-          - condition: template
-            value_template: '{{ states.sun.sun.attributes.elecation > 4 }}' 
-          - condition: and
-            conditions:
-              - condition: state
-                entity_id: 'binary_sensor.mike_charging_status'
-                state: 'off'
-              - condition: state
-                entity_id: 'binary_sensor.tammy_charging_status'
-                state: 'off'
+    condition: time
+    after: '07:30:00'
+    before: '21:30:00'
+#      - condition: or
+#        conditions:
+#          - condition: template
+#            value_template: '{{ states.sun.sun.attributes.elecation > 4 }}' 
+#          - condition: and
+#            conditions:
+#              - condition: state
+#                entity_id: 'binary_sensor.mike_charging_status'
+#                state: 'off'
+#              - condition: state
+#                entity_id: 'binary_sensor.tammy_charging_status'
+#                state: 'off'
   action:
     service: homeassistant.turn_on
     entity_id: switch.rainbow_light
@@ -363,25 +361,25 @@
               On
           {%- endif -%}
 
-- id: thermostat_pump
-  alias: 'Toggle pump when call for heat and not freezing'
-  trigger:
-    platform: state
-    entity_id: climate.thermostat_heating_1
-  condition:
-    - condition: template
-      value_template: '{{ trigger.to_state.attributes.operating_state != trigger.from_state.attributes.operating_state }}'
-    - condition: numeric_state
-      entity_id: sensor.dark_sky_temperature
-      above: '40'
-  action:
-    service_template: >
-      {% if is_state_attr('climate.thermostat_heating_1', 'operating_state', 'Heating') %}
-        switch.turn_on
-      {% else %}
-        switch.turn_off
-      {% endif %}
-    entity_id: switch.stove_pump
+#- id: thermostat_pump
+#  alias: 'Toggle pump when call for heat and not freezing'
+#  trigger:
+#    platform: state
+#    entity_id: climate.thermostat_heating_1
+#  condition:
+#    - condition: template
+#      value_template: '{{ trigger.to_state.attributes.operating_state != trigger.from_state.attributes.operating_state }}'
+#    - condition: numeric_state
+#      entity_id: sensor.dark_sky_temperature
+#      above: '40'
+#  action:
+#    service_template: >
+#      {% if is_state_attr('climate.thermostat_heating_1', 'operating_state', 'Heating') %}
+#        switch.turn_on
+#      {% else %}
+#        switch.turn_off
+#      {% endif %}
+#    entity_id: switch.stove_pump
 
 - id: pump_antifreeze
   alias: 'Toggle pump on when temp drops'
