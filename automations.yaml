@@ -8,6 +8,7 @@
     seconds: 00
   action:
     service: zwave.heal_network
+#test
 
 - id: rainbow_light_on
   alias: Rainbow Light On
@@ -51,7 +52,7 @@
       seconds: 0
 #    - platform: state
 #      entity_id: group.phones_charging
-#      to: 
+#      to:
   action:
     service: homeassistant.turn_off
     entity_id:
@@ -113,7 +114,7 @@
 #      - condition: or
 #        conditions:
 #          - condition: template
-#            value_template: '{{ states.sun.sun.attributes.elecation > 4 }}' 
+#            value_template: '{{ states.sun.sun.attributes.elecation > 4 }}'
 #          - condition: and
 #            conditions:
 #              - condition: state
@@ -431,5 +432,3 @@
 #  action:
 #    entity_id: switch.stove_blower
 #    service: switch.turn_off
-
-
