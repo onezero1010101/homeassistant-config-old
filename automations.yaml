@@ -9,7 +9,7 @@
   action:
     service: zwave.heal_network
 
-    - id: rainbow_light_on
+- id: rainbow_light_on
   alias: Rainbow Light On
   trigger:
     platform: time
