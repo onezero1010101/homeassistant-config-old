@@ -41,3 +41,5 @@ media_player.roku_3__63259d009925:
 script.thermostat:
   emulated_hue_hidden: false
 
+climate.thermostat_heating_1:
+  friendly_name: 'Thermostat'

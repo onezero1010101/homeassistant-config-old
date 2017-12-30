@@ -10,8 +10,8 @@ home_tab:
   view: yes
   entities:
     - group.hvac
-    - group.reptile
     - group.stove
+    - group.reptile
     - group.pool
     - group.doors
 #    - group.windows
@@ -93,9 +93,10 @@ devices:
 hvac:
   name: Thermostat
   entities:
-    - input_select.hvac_operation_mode
-    - input_select.hvac_fan_mode
-    - input_number.hvac_target_temp
+#    - input_select.hvac_operation_mode
+#    - input_select.hvac_fan_mode
+#    - input_number.hvac_target_temp
+    - climate.thermostat_heating_1
 #    - sensor.climate_temperature
     - sensor.climate_temperature
     - sensor.climate_fan_state
