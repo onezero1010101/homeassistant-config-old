@@ -113,6 +113,11 @@ input_boolean: !include input_booleans.yaml
 shell_command:
   renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01 
 
+influxdb:
+  host: 208.69.160.22
+  username: hass
+  password: h@ss
+  
 #usps:
 #  username: !secret uspsuid
 #  password: !secret uspspwd
@@ -124,4 +129,3 @@ telegram_bot:
   api_key: !secret telegram_api
   allowed_chat_ids:
     - 315019903
-
